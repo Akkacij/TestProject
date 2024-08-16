@@ -1,15 +1,17 @@
-# pull official base image
-FROM python:3.8
-# set environment variables
-ENV PYTHONUNBUFFERED 1
+FROM python:3.10
 
-# set work directory
-WORKDIR /app
+# set env variables
+ENV PYTHONFAULTHANDLER=1 \
+  PYTHONUNBUFFERED=1 \
+  CODE_DIR=/code
+
+COPY requirements.txt ./
+
 RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
-# copy project
-COPY . /app
+WORKDIR $CODE_DIR
 
-RUN python manage.py migrate
-RUN python manage.py collectstatic --noinput
+COPY . $CODE_DIR/
+
+WORKDIR $CODE_DIR/
